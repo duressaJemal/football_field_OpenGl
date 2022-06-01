@@ -72,10 +72,10 @@ glfw.set_window_size_callback(window, window_resize)
 glfw.make_context_current(window)
 
 # load here the 3d meshes
-roof_indices, roof_buffer = ObjLoader.load_model("meshes/roof.obj")
-seat_indices, seat_buffer = ObjLoader.load_model("meshes/seats.obj")
-pitch_indices, pitch_buffer = ObjLoader.load_model("meshes/pitch.obj")
-ground_indices, ground_buffer = ObjLoader.load_model("meshes/ground.obj")
+roof_indices, roof_buffer = ObjLoader.load_model("components/roof.obj")
+seat_indices, seat_buffer = ObjLoader.load_model("components/seats.obj")
+pitch_indices, pitch_buffer = ObjLoader.load_model("components/pitch.obj")
+ground_indices, ground_buffer = ObjLoader.load_model("components/ground.obj")
 
 shader = compileProgram(compileShader(
     vertex_src, GL_VERTEX_SHADER), compileShader(fragment_src, GL_FRAGMENT_SHADER))
@@ -187,10 +187,10 @@ glEnableVertexAttribArray(2)
 # TEXTURES
 
 textures = glGenTextures(4)
-load_texture("meshes/roof.jpg", textures[0])
-load_texture("meshes/seats.jpg", textures[1])
-load_texture("meshes/pitch2.jpg", textures[2])  # added
-load_texture("meshes/ground.jpg", textures[3])  # added
+load_texture("components/roof.jpg", textures[0])
+load_texture("components/seats.jpg", textures[1])
+load_texture("components/pitch2.jpg", textures[2])  # added
+load_texture("components/ground.jpg", textures[3])  # added
 
 glUseProgram(shader)
 glClearColor(0, 0.1, 0.1, 1)
