@@ -42,22 +42,22 @@ void main()
 """
 
 
-# glfw callback functions
+# glfw function
 def window_resize(window, width, height):
     glViewport(0, 0, width, height)
     projection = pyrr.matrix44.create_perspective_projection_matrix(
         45, width / height, 0.1, 100)
-    glUniformMatrix4fv(proj_loc, 1, GL_FALSE, projection)
+    glUniformMatrix4fv(projection_location, 1, GL_FALSE, projection)
 
 
 # initializing glfw library
 if not glfw.init():
     raise Exception("glfw can not be initialized!")
 
-# creating the window
+# creating the glfw window
 window = glfw.create_window(1280, 720, "My OpenGL window", None, None)
 
-# check if window was created
+# check the creation of the window
 if not window:
     glfw.terminate()
     raise Exception("glfw window can not be created!")
@@ -71,7 +71,7 @@ glfw.set_window_size_callback(window, window_resize)
 # make the context current
 glfw.make_context_current(window)
 
-# load here the 3d meshes
+# loading the 3d meshes
 roof_indices, roof_buffer = ObjLoader.load_model("components/roof.obj")
 seat_indices, seat_buffer = ObjLoader.load_model("components/seats.obj")
 pitch_indices, pitch_buffer = ObjLoader.load_model("components/pitch.obj")
@@ -81,10 +81,9 @@ shader = compileProgram(compileShader(
     vertex_src, GL_VERTEX_SHADER), compileShader(fragment_src, GL_FRAGMENT_SHADER))
 
 
-# VAO and VBO
+# VBO and VAO
 VAO = glGenVertexArrays(4)
 VBO = glGenBuffers(4)
-# EBO = glGenBuffers(1)
 
 # ROOF
 
@@ -93,10 +92,6 @@ glBindVertexArray(VAO[0])
 # roof Vertex Buffer Object
 glBindBuffer(GL_ARRAY_BUFFER, VBO[0])
 glBufferData(GL_ARRAY_BUFFER, roof_buffer.nbytes, roof_buffer, GL_STATIC_DRAW)
-
-# glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO)
-# glBufferData(GL_ELEMENT_ARRAY_BUFFER, roof_indices.nbytes, roof_indices, GL_STATIC_DRAW)
-
 # roof vertices
 glEnableVertexAttribArray(0)
 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
@@ -140,10 +135,6 @@ glBindVertexArray(VAO[2])
 glBindBuffer(GL_ARRAY_BUFFER, VBO[2])
 glBufferData(GL_ARRAY_BUFFER, pitch_buffer.nbytes,
              pitch_buffer, GL_STATIC_DRAW)
-
-# glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO)
-# glBufferData(GL_ELEMENT_ARRAY_BUFFER, roof_indices.nbytes, roof_indices, GL_STATIC_DRAW)
-
 # field vertices
 glEnableVertexAttribArray(0)
 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
@@ -166,10 +157,6 @@ glBindVertexArray(VAO[3])
 glBindBuffer(GL_ARRAY_BUFFER, VBO[3])
 glBufferData(GL_ARRAY_BUFFER, ground_buffer.nbytes,
              ground_buffer, GL_STATIC_DRAW)
-
-# glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO)
-# glBufferData(GL_ELEMENT_ARRAY_BUFFER, roof_indices.nbytes, roof_indices, GL_STATIC_DRAW)
-
 # plane vertices
 glEnableVertexAttribArray(0)
 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
@@ -185,12 +172,11 @@ glEnableVertexAttribArray(2)
 
 
 # TEXTURES
-
 textures = glGenTextures(4)
 load_texture("components/roof.jpg", textures[0])
 load_texture("components/seats.jpg", textures[1])
-load_texture("components/pitch2.jpg", textures[2])  # added
-load_texture("components/ground.jpg", textures[3])  # added
+load_texture("components/pitch2.jpg", textures[2])  
+load_texture("components/ground.jpg", textures[3])  
 
 glUseProgram(shader)
 glClearColor(0, 0.1, 0.1, 1)
@@ -203,22 +189,22 @@ projection = pyrr.matrix44.create_perspective_projection_matrix(
 roof_pos = pyrr.matrix44.create_from_translation(pyrr.Vector3([0, -5, -10]))
 seat_pos = pyrr.matrix44.create_from_translation(pyrr.Vector3([0, -5, -10]))
 pitch_pos = pyrr.matrix44.create_from_translation(
-    pyrr.Vector3([0, -5, -10]))  # added
+    pyrr.Vector3([0, -5, -10])) 
 ground_pos = pyrr.matrix44.create_from_translation(
-    pyrr.Vector3([0, -5, -10]))  # added
+    pyrr.Vector3([0, -5, -10]))  
 
-# eye, target, up
+# camera position, target position and up vertex
 view = pyrr.matrix44.create_look_at(pyrr.Vector3(
-    [0, 12, 8]), pyrr.Vector3([0, 0, -5]), pyrr.Vector3([0, 1, 0]))
+    [0, 12, 7]), pyrr.Vector3([0, 0, -7]), pyrr.Vector3([0, 1, 0]))
 
-model_loc = glGetUniformLocation(shader, "model")
-proj_loc = glGetUniformLocation(shader, "projection")
-view_loc = glGetUniformLocation(shader, "view")
+model_location = glGetUniformLocation(shader, "model")
+projection_location = glGetUniformLocation(shader, "projection")
+view_location = glGetUniformLocation(shader, "view")
 
-glUniformMatrix4fv(proj_loc, 1, GL_FALSE, projection)
-glUniformMatrix4fv(view_loc, 1, GL_FALSE, view)
+glUniformMatrix4fv(projection_location, 1, GL_FALSE, projection)
+glUniformMatrix4fv(view_location, 1, GL_FALSE, view)
 
-# the main application loop
+# main application loop
 while not glfw.window_should_close(window):
     glfw.poll_events()
 
@@ -230,16 +216,15 @@ while not glfw.window_should_close(window):
     model = pyrr.matrix44.multiply(rot_y, roof_pos)
     glBindVertexArray(VAO[0])
     glBindTexture(GL_TEXTURE_2D, textures[0])
-    glUniformMatrix4fv(model_loc, 1, GL_FALSE, model)
+    glUniformMatrix4fv(model_location, 1, GL_FALSE, model)
     glDrawArrays(GL_TRIANGLES, 0, len(roof_indices))
-    # glDrawElements(GL_TRIANGLES, len(roof_indices), GL_UNSIGNED_INT, None)
 
     # SEATS
     rot_y = pyrr.Matrix44.from_y_rotation(0.5 * time)
     model = pyrr.matrix44.multiply(rot_y, seat_pos)
     glBindVertexArray(VAO[1])
     glBindTexture(GL_TEXTURE_2D, textures[1])
-    glUniformMatrix4fv(model_loc, 1, GL_FALSE, model)
+    glUniformMatrix4fv(model_location, 1, GL_FALSE, model)
     glDrawArrays(GL_TRIANGLES, 0, len(seat_indices))
 
     # PITCH
@@ -247,7 +232,7 @@ while not glfw.window_should_close(window):
     model = pyrr.matrix44.multiply(rot_y, pitch_pos)
     glBindVertexArray(VAO[2])
     glBindTexture(GL_TEXTURE_2D, textures[2])
-    glUniformMatrix4fv(model_loc, 1, GL_FALSE, model)
+    glUniformMatrix4fv(model_location, 1, GL_FALSE, model)
     glDrawArrays(GL_TRIANGLES, 0, len(pitch_indices))
 
     # GROUND
@@ -255,10 +240,10 @@ while not glfw.window_should_close(window):
     model = pyrr.matrix44.multiply(rot_y, ground_pos)
     glBindVertexArray(VAO[3])
     glBindTexture(GL_TEXTURE_2D, textures[3])
-    glUniformMatrix4fv(model_loc, 1, GL_FALSE, model)
+    glUniformMatrix4fv(model_location, 1, GL_FALSE, model)
     glDrawArrays(GL_TRIANGLES, 0, len(ground_indices))
 
     glfw.swap_buffers(window)
 
-# terminate glfw, free up allocated resources
+# terminate the glfw windows
 glfw.terminate()
