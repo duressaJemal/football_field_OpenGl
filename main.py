@@ -173,10 +173,10 @@ glEnableVertexAttribArray(2)
 
 # TEXTURES
 textures = glGenTextures(4)
-load_texture("components/roof.jpg", textures[0])
-load_texture("components/seats.jpg", textures[1])
-load_texture("components/pitch2.jpg", textures[2])  
-load_texture("components/ground.jpg", textures[3])  
+load_texture("components/roof_new.png", textures[0])
+load_texture("components/seats_new.png", textures[1])
+load_texture("components/pitch_new.png", textures[2])  
+load_texture("components/ground_new.png", textures[3])  
 
 glUseProgram(shader)
 glClearColor(0, 0.1, 0.1, 1)
@@ -212,32 +212,32 @@ while not glfw.window_should_close(window):
     time = glfw.get_time()
 
     # # ROOF
-    rot_y = pyrr.Matrix44.from_y_rotation(0.5 * time)
-    model = pyrr.matrix44.multiply(rot_y, roof_pos)
+    y_rotation = pyrr.Matrix44.from_y_rotation(0.5 * time)
+    model = pyrr.matrix44.multiply(y_rotation, roof_pos)
     glBindVertexArray(VAO[0])
     glBindTexture(GL_TEXTURE_2D, textures[0])
     glUniformMatrix4fv(model_location, 1, GL_FALSE, model)
     glDrawArrays(GL_TRIANGLES, 0, len(roof_indices))
 
     # SEATS
-    rot_y = pyrr.Matrix44.from_y_rotation(0.5 * time)
-    model = pyrr.matrix44.multiply(rot_y, seat_pos)
+    y_rotation = pyrr.Matrix44.from_y_rotation(0.5 * time)
+    model = pyrr.matrix44.multiply(y_rotation, seat_pos)
     glBindVertexArray(VAO[1])
     glBindTexture(GL_TEXTURE_2D, textures[1])
     glUniformMatrix4fv(model_location, 1, GL_FALSE, model)
     glDrawArrays(GL_TRIANGLES, 0, len(seat_indices))
 
     # PITCH
-    rot_y = pyrr.Matrix44.from_y_rotation(0.5 * time)
-    model = pyrr.matrix44.multiply(rot_y, pitch_pos)
+    y_rotation = pyrr.Matrix44.from_y_rotation(0.5 * time)
+    model = pyrr.matrix44.multiply(y_rotation, pitch_pos)
     glBindVertexArray(VAO[2])
     glBindTexture(GL_TEXTURE_2D, textures[2])
     glUniformMatrix4fv(model_location, 1, GL_FALSE, model)
     glDrawArrays(GL_TRIANGLES, 0, len(pitch_indices))
 
     # GROUND
-    rot_y = pyrr.Matrix44.from_y_rotation(0.5 * time)
-    model = pyrr.matrix44.multiply(rot_y, ground_pos)
+    y_rotation = pyrr.Matrix44.from_y_rotation(0.5 * time)
+    model = pyrr.matrix44.multiply(y_rotation, ground_pos)
     glBindVertexArray(VAO[3])
     glBindTexture(GL_TEXTURE_2D, textures[3])
     glUniformMatrix4fv(model_location, 1, GL_FALSE, model)
