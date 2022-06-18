@@ -6,7 +6,7 @@ from TextureLoader import load_texture
 from ObjLoader import ObjLoader
 
 
-vertex_src = """
+vertext_shader = """
 # version 330
 
 layout(location = 0) in vec3 a_position;
@@ -26,7 +26,7 @@ void main()
 }
 """
 
-fragment_src = """
+fragment_shader = """
 # version 330
 
 in vec2 v_texture;
@@ -55,12 +55,12 @@ if not glfw.init():
     raise Exception("glfw can not be initialized!")
 
 # creating the glfw window
-window = glfw.create_window(1280, 720, "My OpenGL window", None, None)
+window = glfw.create_window(1280, 720, "OpenGl window", None, None)
 
 # check the creation of the window
 if not window:
     glfw.terminate()
-    raise Exception("glfw window can not be created!")
+    raise Exception("Unable to create glfw window")
 
 # set window's position
 glfw.set_window_pos(window, 400, 200)
@@ -78,8 +78,7 @@ pitch_indices, pitch_buffer = ObjLoader.load_model("components/pitch.obj")
 ground_indices, ground_buffer = ObjLoader.load_model("components/ground.obj")
 
 shader = compileProgram(compileShader(
-    vertex_src, GL_VERTEX_SHADER), compileShader(fragment_src, GL_FRAGMENT_SHADER))
-
+    vertext_shader, GL_VERTEX_SHADER), compileShader(fragment_shader, GL_FRAGMENT_SHADER))
 
 # VBO and VAO
 VAO = glGenVertexArrays(4)
